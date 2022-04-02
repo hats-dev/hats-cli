@@ -1,0 +1,23 @@
+{
+	"extends": [
+		"eslint:recommended",
+		"plugin:@typescript-eslint/recommended",
+		"plugin:import/recommended",
+		"plugin:import/typescript",
+		"plugin:jest/style",
+		"plugin:node/recommended",
+		"plugin:promise/recommended",
+		"prettier"
+	],
+	"parser": "@typescript-eslint/parser",
+	"plugins": ["@typescript-eslint"],
+	"root": true,
+	"rules": {
+		"node/no-unsupported-features/es-syntax": ["off"]
+	},
+	"settings": {
+		"node": {
+			"tryExtensions": [".js", ".json", ".node", ".ts", ".d.ts"]
+		}
+	}
+}
