@@ -20,16 +20,15 @@ If your PR proposes a new feature start a [**discussion**](https://github.com/ha
 
 If your PR proposes a bug fix, create an [**issue**](https://github.com/hats-dev/hats-cli/issues/new/choose) first.
 
-
 ## Creating a PR
 
 1. Fork this repo to your own GitHub
 
 1. Remove any existing `hats-cli` global installations on your machine
 
-    ```bash
-    npm uninstall -g hats-cli
-    ```
+   ```bash
+   npm uninstall -g hats-cli
+   ```
 
 1. Clone your fork to your machine
 
