@@ -11,6 +11,7 @@ export const log_types = O.keys(LogType);
 export type LoggerFnOptions = {
 	debug?: boolean;
 	prod?: boolean;
+	stringify?: boolean;
 };
 type LoggerFnParams = LoggerFnOptions & {
 	msg: unknown;
@@ -21,20 +22,30 @@ function allowLog(params: LoggerFnOptions) {
 	const { debug = true, prod = false } = params;
 	return isProdEnv() ? prod : debug;
 }
-function log({ type }: { type: LogType }): LoggerFn {
+type LogParams = { type: LogType };
+function stringifyLog(params: LoggerFnOptions & LogParams) {
+	if (params.stringify !== undefined) {
+		return params.stringify;
+	}
+	return !isProdEnv();
+}
+function log({ type }: LogParams): LoggerFn {
 	return function (params) {
 		if (allowLog(params)) {
+			const s = stringifyLog({ type, ...params })
+				? `${type.toLocaleUpperCase()}: ${JSON.stringify(params, null, '\t')}`
+				: params.msg;
 			switch (type) {
 				case LogType.error: {
-					console.error('Error:', JSON.stringify(params));
+					console.error(s);
 					break;
 				}
 				case LogType.log: {
-					console.log('Log:', JSON.stringify(params));
+					console.log(s);
 					break;
 				}
 				case LogType.warn:
-					console.warn('Warn:', JSON.stringify(params));
+					console.warn(s);
 					break;
 				default:
 					throw new Error();
