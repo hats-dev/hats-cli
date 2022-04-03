@@ -27,9 +27,6 @@ Ensure your shell environment has the following programs installed globally:
 - [Node (v12 or higher)](https://www.npmjs.com/package/n)
 - [Git (v2.3 or higher)](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 - [GitHub CLI (latest)](https://cli.github.com/)
-- tree
-  - [MacOS homebrew](https://formulae.brew.sh/formula/tree)
-  - [Ubuntu](https://howtoinstall.co/en/tree)
 - [auto-changelog](https://npmjs.com/package/auto-changelog)
 - [doctoc](https://npmjs.com/package/doctoc)
 
