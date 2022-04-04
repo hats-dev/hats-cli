@@ -17,6 +17,7 @@
 	"root": true,
 	"rules": {
 		"@typescript-eslint/switch-exhaustiveness-check": ["error"],
+		"jest/no-disabled-tests": ["error"],
 		"node/no-unsupported-features/es-syntax": ["off"]
 	},
 	"settings": {
