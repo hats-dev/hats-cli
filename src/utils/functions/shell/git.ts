@@ -1,12 +1,13 @@
-import { whichFile } from './which';
-import { getRootDirPath, PathFnParams } from '../fs/path';
+// import { whichFile } from './which';
+import { PathFnParams } from '../fs/path';
+// import { getRootDirPath, PathFnParams } from '../fs/path';
 import exec from '../node/exec';
-import {
-	GithubConfig,
-	ModuleConfig,
-	PathConfig,
-} from '../../constants/configs';
-import { library_repo_url } from '../../constants/urls';
+// import {
+// 	GithubConfig,
+// 	ModuleConfig,
+// 	Paths,
+// } from '../../constants/configs';
+// import { library_repo_url } from '../../constants/urls';
 import { logger, type LoggerFnOptions } from '../console/logger';
 import { EmptyObject } from '../../ts/objects';
 
@@ -68,7 +69,8 @@ export async function getGitUserConfigs(
 	}
 }
 
-export type ScaffoldRepoParams = PathConfig;
+/* TODO
+export type ScaffoldRepoParams = Paths;
 export async function scaffoldRepo(
 	params: ScaffoldRepoParams & LoggerFnOptions,
 ): Promise<void> {
@@ -85,7 +87,7 @@ git clone ${library_repo_url} ${params.root_dir_name} \
 }
 
 type InitRemoteParams = ModuleConfig &
-	PathConfig &
+	Paths &
 	GithubConfig &
 	LoggerFnOptions;
 export async function initRepo(params: InitRemoteParams): Promise<void> {
@@ -115,3 +117,4 @@ ${code_found ? '&& code .' : ''}\
 		throw new Error();
 	}
 }
+*/

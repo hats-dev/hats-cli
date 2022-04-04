@@ -1,13 +1,15 @@
-import { PathConfig } from '../../constants/configs';
+import { DebugConfigs, ConfigType, RUNTIME } from '../../constants/configs';
 
 export function getCwd() {
 	return process.cwd();
 }
 export const getParentDirPath = getCwd;
 
-export type GetRootDirPathParams = PathConfig;
+export type GetRootDirPathParams = DebugConfigs;
 export function getRootDirPath(params: GetRootDirPathParams) {
-	return `${getParentDirPath()}/${params.root_dir_name}`;
+	return `${getParentDirPath()}/${
+		params[ConfigType.RUNTIME][RUNTIME.ROOT_DIR_NAME]
+	}`;
 }
 
 export type PathFnParams = { path: string };
