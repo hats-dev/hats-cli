@@ -1,11 +1,11 @@
 import { logger } from '../console/logger';
-import { getCwd, getProjectRoot } from './path';
+import { getCwd, getRootDirPath } from './path';
 
 test('utils > functions > fs > path', function () {
 	// Data
 	const cwd = getCwd();
-	const project_root = getProjectRoot({ paths_root_folder: 'foo' });
-	[{ str: cwd }, { str: project_root }].forEach((s) => {
+	const root_dir_path = getRootDirPath({ root_dir_name: 'foo' });
+	[{ str: cwd }, { str: root_dir_path }].forEach((s) => {
 		// Types
 		const str_type = typeof s.str;
 		type T = typeof str_type;

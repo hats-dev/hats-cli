@@ -1,3 +1,3 @@
-export type HatsConfig = {
-	paths_root_folder: string;
-};
+export type ProjectConfig = { root_dir_name: string };
+
+export type HatsConfig = ProjectConfig;

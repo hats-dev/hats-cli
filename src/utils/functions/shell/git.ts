@@ -1,6 +1,6 @@
-import { getProjectRoot, PathFnParams } from '../fs/path';
+import { getRootDirPath, PathFnParams } from '../fs/path';
 import exec from '../node/exec';
-import { HatsConfig } from '../../constants/configs';
+import { ProjectConfig } from '../../constants/configs';
 import { library_repo_url } from '../../constants/urls';
 import { logger, type LoggerFnOptions } from '../console/logger';
 import { EmptyObject } from '../../ts/objects';
@@ -63,14 +63,14 @@ export async function getGitUserConfigs(
 	}
 }
 
-export type ScaffoldRepoParams = Pick<HatsConfig, 'paths_root_folder'>;
+export type ScaffoldRepoParams = ProjectConfig;
 export async function scaffoldRepo(
 	params: ScaffoldRepoParams & LoggerFnOptions,
 ): Promise<void> {
 	try {
 		const sh_scaffold_repo = `\
-git clone ${library_repo_url} ${params.paths_root_folder} \
-&& rm -rf ${getProjectRoot(params)}/.git\
+git clone ${library_repo_url} ${params.root_dir_name} \
+&& rm -rf ${getRootDirPath(params)}/.git\
 `;
 		await exec(sh_scaffold_repo);
 	} catch (msg) {

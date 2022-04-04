@@ -1,12 +1,13 @@
-import { HatsConfig } from '../../constants/configs';
+import { ProjectConfig } from '../../constants/configs';
 
 export function getCwd() {
 	return process.cwd();
 }
+export const getParentDirPath = getCwd;
 
-export type GetProjectRootParams = Pick<HatsConfig, 'paths_root_folder'>;
-export function getProjectRoot(params: GetProjectRootParams) {
-	return `${getCwd()}/${params.paths_root_folder}`;
+export type GetRootDirPathParams = ProjectConfig;
+export function getRootDirPath(params: GetRootDirPathParams) {
+	return `${getParentDirPath()}/${params.root_dir_name}`;
 }
 
 export type PathFnParams = { path: string };
