@@ -1,2 +1,5 @@
 # Build files
 dist/
+
+# Files modified during each test
+tests/writes.test.txt
