@@ -1,13 +1,5 @@
-// import { whichFile } from './which';
 import { PathFnParams } from '../fs/path';
-// import { getRootDirPath, PathFnParams } from '../fs/path';
 import exec from '../node/exec';
-// import {
-// 	GithubConfig,
-// 	ModuleConfig,
-// 	Paths,
-// } from '../../constants/configs';
-// import { library_repo_url } from '../../constants/urls';
 import { logger, type LoggerFnOptions } from '../console/logger';
 import { EmptyObject } from '../../ts/objects';
 
@@ -69,52 +61,7 @@ export async function getGitUserConfigs(
 	}
 }
 
-/* TODO
-export type ScaffoldRepoParams = Paths;
-export async function scaffoldRepo(
-	params: ScaffoldRepoParams & LoggerFnOptions,
-): Promise<void> {
-	try {
-		const sh_scaffold_repo = `\
-git clone ${library_repo_url} ${params.root_dir_name} \
-&& rm -rf ${getRootDirPath(params)}/.git\
-`;
-		await exec(sh_scaffold_repo);
-	} catch (msg) {
-		logger.error({ msg, ...params });
-		throw new Error();
-	}
+export enum GithubRepoAccessType {
+	private = 'private',
+	public = 'public',
 }
-
-type InitRemoteParams = ModuleConfig &
-	Paths &
-	GithubConfig &
-	LoggerFnOptions;
-export async function initRepo(params: InitRemoteParams): Promise<void> {
-	try {
-		const [gh_found, code_found] = await Promise.all(
-			['gh', 'code'].map((program) => whichFile({ program })),
-		);
-		if (!gh_found) {
-			throw new Error(
-				"Oops! Couldn't find the gh cli. Please install and try again https://cli.github.com/",
-			);
-		}
-		const init_repo_script = `
-cd ${getRootDirPath(params)} \
-&& npm i \
-&& git init \
-&& git add . \
-&& git commit -m 'initial commit' \
-&& gh repo create ${params.gh_org_username}/${params.gh_repo} --${
-			params.gh_repo_access
-		} --source=. --remote=origin --description="${params.description}" --push \
-${code_found ? '&& code .' : ''}\
-		`;
-		await exec(init_repo_script);
-	} catch (msg) {
-		logger.error({ msg, prod: true, ...params });
-		throw new Error();
-	}
-}
-*/
