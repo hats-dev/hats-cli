@@ -1,14 +1,13 @@
-import { O } from '../../ts/sets';
-import { logger, LogType, log_types } from './logger';
+import { O, Keys } from '../../ts/sets';
+import { logger, LogType } from './logger';
 
 test('utils > functions > console > logger > keys', function () {
 	// Data
 	const logger_keys = O.keys(logger);
 	// Types
 	type T = typeof logger_keys;
-	type K = T[number];
-	type TL = typeof log_types;
-	type TLK = TL[number];
+	type K = Keys<typeof logger>;
+	type TLK = Keys<typeof LogType>;
 	// Tests
 	expect<T>(logger_keys).toContain<K>(LogType.error);
 	expect<T>(logger_keys).toContain<K>(LogType.log);
@@ -26,14 +25,9 @@ test('utils > functions > console > logger > keys', function () {
 test('utils > functions > console > logger > functions', function () {
 	// Data
 	const logger_keys = O.keys(logger);
-	// Types
-	type T = typeof logger_keys;
-	type K = T[number];
-	type TL = typeof logger;
-	type Fn<L extends K> = TL[L];
 	// Tests
 	logger_keys.forEach((key) => {
-		const logger_fn: Fn<typeof key> = logger[key];
+		const logger_fn = logger[key];
 		const logger_fn_type = typeof logger_fn;
 		type TFn = typeof logger_fn_type;
 		expect<TFn>(typeof logger_fn).toBe<TFn>('function');

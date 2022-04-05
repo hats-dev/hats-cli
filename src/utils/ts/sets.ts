@@ -3,3 +3,5 @@ export const O: {
 } = {
 	keys: Object.keys,
 };
+
+export type Keys<T extends Record<string, unknown>> = (keyof T)[][number];

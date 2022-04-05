@@ -1,4 +1,4 @@
-import { O } from './sets';
+import { Keys, O } from './sets';
 
 test('utils > ts > sets > O > objects', function () {
 	// Data
@@ -10,7 +10,7 @@ test('utils > ts > sets > O > objects', function () {
 	const foo_keys = O.keys(foo);
 	// Types
 	type T = typeof foo_keys;
-	type K = T[number];
+	type K = Keys<typeof foo>;
 	// Tests: Contains
 	expect<T>(foo_keys).toContain<K>('b');
 	expect<T>(foo_keys).toContain<K>('a');
@@ -34,7 +34,7 @@ test('utils > ts > sets > O > enums', function () {
 	const foo_keys = O.keys(Foo);
 	// Types
 	type T = typeof foo_keys;
-	type K = T[number];
+	type K = Keys<typeof Foo>;
 	// Tests: Contains
 	expect<T>(foo_keys).toContain<K>(Foo.b);
 	expect<T>(foo_keys).toContain<K>('b');
