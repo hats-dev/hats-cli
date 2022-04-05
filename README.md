@@ -49,7 +49,7 @@ hats create my-cool-lib
 Skip interactive prompts, and use default configs
 
 ```bash
-hats create my-cool-lib -y
+hats create -y my-cool-lib
 ```
 
 ### `config`
