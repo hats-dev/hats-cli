@@ -1,6 +1,8 @@
-import { LicenseNameType } from '../functions/hats/configs';
-
-export const Licenses: Record<LicenseNameType, string> = {
+export enum LicenseType {
+	'BSD-3-Clause' = 'BSD-3-Clause',
+	'MIT' = 'MIT',
+}
+export const licenses: Record<LicenseType, string> = {
 	'BSD-3-Clause': `All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
