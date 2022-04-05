@@ -1,4 +1,4 @@
-import { LicenseNameType } from './configs';
+import { LicenseNameType } from '../functions/hats/configs';
 
 export const Licenses: Record<LicenseNameType, string> = {
 	'BSD-3-Clause': `All rights reserved.

@@ -1,4 +1,4 @@
-import { DebugConfigs, ConfigType, RUNTIME } from '../../constants/configs';
+import { DebugConfigs, ConfigType, RUNTIME } from '../hats/configs';
 
 export function getCwd() {
 	return process.cwd();

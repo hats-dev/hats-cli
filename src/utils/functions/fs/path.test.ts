@@ -1,4 +1,4 @@
-import { ConfigType, RUNTIME } from '../../constants/configs';
+import { ConfigType, RUNTIME } from '../hats/configs';
 import { logger } from '../console/logger';
 import { getCwd, getRootDirPath } from './path';
 

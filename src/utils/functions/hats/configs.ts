@@ -1,6 +1,6 @@
-import { logger, LoggerFnOptions } from '../functions/console/logger';
-import { EmptyObject } from '../ts/objects';
-import { O } from '../ts/sets';
+import { logger, LoggerFnOptions } from '../console/logger';
+import { EmptyObject } from '../../ts/objects';
+import { O } from '../../ts/sets';
 
 export enum GithubRepoAccessType {
 	private = 'private',
