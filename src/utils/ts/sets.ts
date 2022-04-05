@@ -5,3 +5,6 @@ export const O: {
 };
 
 export type Keys<T extends Record<string, unknown>> = (keyof T)[][number];
+
+export type Exc<T, V extends T> = Exclude<T, V>;
+export type Ext<T, V extends T> = Extract<T, V>;
