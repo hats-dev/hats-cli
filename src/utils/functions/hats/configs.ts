@@ -1,20 +1,12 @@
-import { logger, LoggerFnOptions } from '../console/logger';
-import { EmptyObject } from '../../ts/objects';
-import { O } from '../../ts/sets';
+import { logger } from '../console/logger';
+import { Exc, Ext, Keys, O } from '../../ts/sets';
 
-export enum GithubRepoAccessType {
-	private = 'private',
-	public = 'public',
-}
-export enum LicenseNameType {
-	'BSD-3-Clause' = 'BSD-3-Clause',
-	'MIT' = 'MIT',
-}
-export enum LocalProgramType {
-	'auto-changelog' = 'auto-changelog',
-	doctoc = 'doctoc',
-	gh = 'gh',
-}
+// TODO
+export type DebugConfigs = {
+	[ConfigType.RUNTIME]: {
+		[RUNTIME.ROOT_DIR_NAME]: string;
+	};
+};
 
 export enum ConfigType {
 	AUTHOR = 'AUTHOR',
@@ -25,7 +17,15 @@ export enum ConfigType {
 	RUNTIME = 'RUNTIME',
 	SCRIPTS = 'SCRIPTS',
 }
+export type ConfigTypes = Keys<typeof ConfigType>;
 export const config_types = O.keys(ConfigType);
+
+type ConfigMapper<K extends ConfigType, V extends string> = `HATS.${K}.${V}`;
+function configMapper<K extends ConfigType, V extends string>(k: K) {
+	return function (v: V): ConfigMapper<K, V> {
+		return `HATS.${k}.${v}`;
+	};
+}
 
 export enum AUTHOR {
 	CONTACT = 'CONTACT',
@@ -56,9 +56,9 @@ export enum PATHS {
 	TYPES_DTS_PATH = 'TYPES_DTS_PATH',
 }
 export enum RUNTIME {
-	INTERACTIVE = 'INTERACTIVE',
 	PROGRAMS = 'PROGRAMS',
 	ROOT_DIR_NAME = 'ROOT_DIR_NAME',
+	SKIP_INTERACTIVE = 'SKIP_INTERACTIVE',
 }
 export enum SCRIPTS {
 	CHANGELOG = 'CHANGELOG',
@@ -66,13 +66,49 @@ export enum SCRIPTS {
 	MD_TOC = 'MD_TOC',
 }
 
-export const author_configs = O.keys(AUTHOR);
-export const github_configs = O.keys(GITHUB);
-export const license_configs = O.keys(LICENSE);
-export const module_configs = O.keys(MODULE);
-export const paths_configs = O.keys(PATHS);
-export const runtime_configs = O.keys(RUNTIME);
-export const scripts_configs = O.keys(SCRIPTS);
+type AuthorProps = Keys<typeof AUTHOR>;
+type GithubProps = Keys<typeof GITHUB>;
+type LicenseProps = Keys<typeof LICENSE>;
+type ModuleProps = Keys<typeof MODULE>;
+type PathsProps = Keys<typeof PATHS>;
+type RuntimeProps = Keys<typeof RUNTIME>;
+type ScriptsProps = Keys<typeof SCRIPTS>;
+export type AuthorConfigs = ConfigMapper<ConfigType.AUTHOR, AuthorProps>;
+export type GithubConfigs = ConfigMapper<ConfigType.GITHUB, GithubProps>;
+export type LicenseConfigs = ConfigMapper<ConfigType.LICENSE, LicenseProps>;
+export type ModuleConfigs = ConfigMapper<ConfigType.MODULE, ModuleProps>;
+export type PathsConfigs = ConfigMapper<ConfigType.PATHS, PathsProps>;
+export type RuntimeConfigs = ConfigMapper<ConfigType.RUNTIME, RuntimeProps>;
+export type ScriptsConfigs = ConfigMapper<ConfigType.SCRIPTS, ScriptsProps>;
+export type Configs =
+	| AuthorConfigs
+	| GithubConfigs
+	| LicenseConfigs
+	| ModuleConfigs
+	| PathsConfigs
+	| RuntimeConfigs
+	| ScriptsConfigs;
+export const author_configs = O.keys(AUTHOR).map(
+	configMapper<ConfigType.AUTHOR, AuthorProps>(ConfigType.AUTHOR),
+);
+export const github_configs = O.keys(GITHUB).map(
+	configMapper<ConfigType.GITHUB, GithubProps>(ConfigType.GITHUB),
+);
+export const license_configs = O.keys(LICENSE).map(
+	configMapper<ConfigType.LICENSE, LicenseProps>(ConfigType.LICENSE),
+);
+export const module_configs = O.keys(MODULE).map(
+	configMapper<ConfigType.MODULE, ModuleProps>(ConfigType.MODULE),
+);
+export const paths_configs = O.keys(PATHS).map(
+	configMapper<ConfigType.PATHS, PathsProps>(ConfigType.PATHS),
+);
+export const runtime_configs = O.keys(RUNTIME).map(
+	configMapper<ConfigType.RUNTIME, RuntimeProps>(ConfigType.RUNTIME),
+);
+export const scripts_configs = O.keys(SCRIPTS).map(
+	configMapper<ConfigType.SCRIPTS, ScriptsProps>(ConfigType.SCRIPTS),
+);
 export const configs = [
 	...author_configs,
 	...github_configs,
@@ -83,94 +119,63 @@ export const configs = [
 	...scripts_configs,
 ];
 
-export type ConfigKey<
-	K extends ConfigType,
-	V extends string,
-> = `HATS.${K}.${V}`;
-export type author_config_keys = ConfigKey<
-	ConfigType.AUTHOR,
-	typeof author_configs[number]
+export type ArrayConfigs = Ext<
+	Configs,
+	| 'HATS.MODULE.KEYWORDS'
+	| 'HATS.PATHS.TS_BUILD_EXLUDE_PATHS'
+	| 'HATS.RUNTIME.PROGRAMS'
 >;
-export type github_config_keys = ConfigKey<
-	ConfigType.GITHUB,
-	typeof github_configs[number]
->;
-export type license_config_keys = ConfigKey<
-	ConfigType.LICENSE,
-	typeof license_configs[number]
->;
-export type module_config_keys = ConfigKey<
-	ConfigType.MODULE,
-	typeof module_configs[number]
->;
-export type paths_config_keys = ConfigKey<
-	ConfigType.PATHS,
-	typeof paths_configs[number]
->;
-export type runtime_config_keys = ConfigKey<
-	ConfigType.RUNTIME,
-	typeof runtime_configs[number]
->;
-export type scripts_config_keys = ConfigKey<
-	ConfigType.SCRIPTS,
-	typeof scripts_configs[number]
->;
-export type config_keys =
-	| author_config_keys
-	| github_config_keys
-	| license_config_keys
-	| module_config_keys
-	| paths_config_keys
-	| runtime_config_keys
-	| scripts_config_keys;
+export type StringConfigs = Exc<Configs, ArrayConfigs>;
+export type Config = {
+	[key in ArrayConfigs]: string[];
+} & {
+	[key in StringConfigs]: string;
+};
 
-export type V = string | string[];
-export type ConfigData<T extends V> = {
-	default?: T;
-	message?: string;
-	value: T;
-};
-export type ConfigListData<K extends string> = {
-	choices: K[];
-};
-export type ListConfig<T extends V, K extends string> = ConfigData<T> &
-	ConfigListData<K>;
-export type Config<T extends V, K extends string = ''> = Partial<
-	ListConfig<T, K>
->;
-export function isListConfig<T extends V, K extends string>() {
-	return function (c: Config<T, K>): c is ListConfig<T, K> {
-		return !!c.choices;
-	};
+export enum ConfigSource {
+	command_line = 'command_line',
+	git_config = 'git_config',
+	hats_config_file = 'hats_config_file',
+	hats_defaults = 'hats_defaults',
 }
-
-// TODO
-export type DebugConfigs = {
-	[ConfigType.RUNTIME]: {
-		[RUNTIME.ROOT_DIR_NAME]: string;
+export type ConfigSources = Keys<typeof ConfigSource>;
+export const config_sources = O.keys(ConfigSource);
+export type ConfigSourcesPriority = [
+	ConfigSource,
+	ConfigSource,
+	ConfigSource,
+	ConfigSource,
+];
+const default_config_sources_priority: ConfigSourcesPriority = [
+	ConfigSource.hats_defaults,
+	ConfigSource.git_config,
+	ConfigSource.hats_config_file,
+	ConfigSource.command_line,
+];
+type GetConfigParams = {
+	config_sources_priority?: ConfigSourcesPriority;
+	merge_configs: {
+		[key in Ext<ConfigSources, 'hats_defaults'>]: Config;
+	} & {
+		[key in Exc<ConfigSources, 'hats_defaults'>]: Partial<Config>;
 	};
 };
-
-export type GetConfigsParams = typeof EmptyObject & LoggerFnOptions;
-export function getConfigs(params: GetConfigsParams): unknown {
-	try {
-		const system_author_configs: Record<AUTHOR, Config<string>> = {
-			CONTACT: {
-				message: 'Contact email',
-			},
-			NAME: {},
-		};
-		// TODO
-		// const system_github_configs = {};
-		// const system_license_configs = {};
-		// const system_local_configs = {};
-		// const system_module_configs = {};
-		// const system_paths_configs = {};
-		// const system_scripts_configs = {};
-		// const system_configs = [];
-		return system_author_configs;
-	} catch (msg) {
-		logger.error({ msg, ...params });
+export function getConfig(params: GetConfigParams): Config {
+	const {
+		config_sources_priority = default_config_sources_priority,
+		merge_configs,
+	} = params;
+	if (
+		config_sources_priority.length !== config_sources.length ||
+		config_sources_priority.length !== new Set(config_sources_priority).size
+	) {
+		logger.error({ msg: config_sources_priority });
 		throw new Error();
 	}
+	return config_sources_priority.reduce(function (acc, k) {
+		return {
+			...acc,
+			...merge_configs[k],
+		};
+	}, {} as Config);
 }
