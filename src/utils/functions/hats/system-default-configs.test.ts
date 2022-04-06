@@ -126,7 +126,7 @@ describe('utils > functions > hats > system-default-configs', function () {
 						: (expect.stringContaining('') as string),
 				};
 			}, {} as Partial<T>);
-			expect<T>(config).toMatchObject(
+			expect<T>(config).toEqual(
 				expect.objectContaining<Partial<T>>(config_match),
 			);
 		},
