@@ -1,12 +1,5 @@
-import { logger } from '../console/logger';
 import { Exc, Ext, Keys, O } from '../../ts/sets';
-
-// TODO
-export type DebugConfigs = {
-	[ConfigType.RUNTIME]: {
-		[RUNTIME.ROOT_DIR_NAME]: string;
-	};
-};
+import { LicenseNameType } from './system-default-config';
 
 export enum ConfigType {
 	AUTHOR = 'AUTHOR',
@@ -19,9 +12,8 @@ export enum ConfigType {
 }
 export type ConfigTypes = Keys<typeof ConfigType>;
 export const config_types = O.keys(ConfigType);
-
 type ConfigMapper<K extends ConfigType, V extends string> = `HATS.${K}.${V}`;
-function configMapper<K extends ConfigType, V extends string>(k: K) {
+export function configMapper<K extends ConfigType, V extends string>(k: K) {
 	return function (v: V): ConfigMapper<K, V> {
 		return `HATS.${k}.${v}`;
 	};
@@ -65,14 +57,13 @@ export enum SCRIPTS {
 	DEPLOY = 'DEPLOY',
 	MD_TOC = 'MD_TOC',
 }
-
-type AuthorProps = Keys<typeof AUTHOR>;
-type GithubProps = Keys<typeof GITHUB>;
-type LicenseProps = Keys<typeof LICENSE>;
-type ModuleProps = Keys<typeof MODULE>;
-type PathsProps = Keys<typeof PATHS>;
-type RuntimeProps = Keys<typeof RUNTIME>;
-type ScriptsProps = Keys<typeof SCRIPTS>;
+export type AuthorProps = Keys<typeof AUTHOR>;
+export type GithubProps = Keys<typeof GITHUB>;
+export type LicenseProps = Keys<typeof LICENSE>;
+export type ModuleProps = Keys<typeof MODULE>;
+export type PathsProps = Keys<typeof PATHS>;
+export type RuntimeProps = Keys<typeof RUNTIME>;
+export type ScriptsProps = Keys<typeof SCRIPTS>;
 export type AuthorConfigs = ConfigMapper<ConfigType.AUTHOR, AuthorProps>;
 export type GithubConfigs = ConfigMapper<ConfigType.GITHUB, GithubProps>;
 export type LicenseConfigs = ConfigMapper<ConfigType.LICENSE, LicenseProps>;
@@ -88,6 +79,22 @@ export type Configs =
 	| PathsConfigs
 	| RuntimeConfigs
 	| ScriptsConfigs;
+export type ArrayConfigs = Ext<
+	Configs,
+	| 'HATS.MODULE.KEYWORDS'
+	| 'HATS.PATHS.TS_BUILD_EXLUDE_PATHS'
+	| 'HATS.RUNTIME.PROGRAMS'
+>;
+export type LicenseNameConfig = Ext<Configs, 'HATS.LICENSE.NAME'>;
+export type StringConfigs = Exc<Configs, ArrayConfigs | LicenseNameConfig>;
+export type Config = {
+	[key in ArrayConfigs]: string[];
+} & {
+	[key in LicenseNameConfig]: LicenseNameType;
+} & {
+	[key in StringConfigs]: string;
+};
+
 export const author_configs = O.keys(AUTHOR).map(
 	configMapper<ConfigType.AUTHOR, AuthorProps>(ConfigType.AUTHOR),
 );
@@ -119,63 +126,70 @@ export const configs = [
 	...scripts_configs,
 ];
 
-export type ArrayConfigs = Ext<
-	Configs,
-	| 'HATS.MODULE.KEYWORDS'
-	| 'HATS.PATHS.TS_BUILD_EXLUDE_PATHS'
-	| 'HATS.RUNTIME.PROGRAMS'
->;
-export type StringConfigs = Exc<Configs, ArrayConfigs>;
-export type Config = {
-	[key in ArrayConfigs]: string[];
-} & {
-	[key in StringConfigs]: string;
-};
-
 export enum ConfigSource {
 	command_line = 'command_line',
-	git_config = 'git_config',
-	hats_config_file = 'hats_config_file',
-	hats_defaults = 'hats_defaults',
+	git_default = 'git_default',
+	programmatic = 'programmatic',
+	prompt = 'prompt',
+	system_default = 'system_default',
+	user_default = 'user_default',
 }
 export type ConfigSources = Keys<typeof ConfigSource>;
 export const config_sources = O.keys(ConfigSource);
-export type ConfigSourcesPriority = [
-	ConfigSource,
-	ConfigSource,
-	ConfigSource,
-	ConfigSource,
-];
-const default_config_sources_priority: ConfigSourcesPriority = [
-	ConfigSource.hats_defaults,
-	ConfigSource.git_config,
-	ConfigSource.hats_config_file,
-	ConfigSource.command_line,
-];
-type GetConfigParams = {
-	config_sources_priority?: ConfigSourcesPriority;
-	merge_configs: {
-		[key in Ext<ConfigSources, 'hats_defaults'>]: Config;
-	} & {
-		[key in Exc<ConfigSources, 'hats_defaults'>]: Partial<Config>;
-	};
+export type ConfigsFromCommandLine = Ext<
+	Configs,
+	'HATS.MODULE.NAME' | 'HATS.RUNTIME.SKIP_INTERACTIVE'
+>;
+export type ConfigsFromGit = Ext<
+	Configs,
+	'HATS.AUTHOR.NAME' | 'HATS.GITHUB.USERNAME'
+>;
+export type ConfigsFromProgrammatic = Ext<
+	Configs,
+	| 'HATS.AUTHOR.CONTACT'
+	| Exc<LicenseConfigs, 'HATS.LICENSE.NAME'>
+	| 'HATS.MODULE.DISPLAY_NAME'
+	| Exc<RuntimeConfigs, 'HATS.RUNTIME.SKIP_INTERACTIVE'>
+	| ScriptsConfigs
+>;
+export type ConfigsFromPrompt = Exc<
+	Configs,
+	| ConfigsFromCommandLine
+	| Exc<
+			ConfigsFromProgrammatic,
+			'HATS.AUTHOR.CONTACT' | 'HATS.RUNTIME.ROOT_DIR_NAME'
+	  >
+>;
+export type ConfigsFromSystemDefault = Exc<
+	Configs,
+	| 'HATS.AUTHOR.NAME'
+	| Exc<GithubConfigs, 'HATS.GITHUB.REPO_ACCESS'>
+	| 'HATS.MODULE.DESCRIPTION'
+	| ConfigsFromCommandLine
+	| ConfigsFromProgrammatic
+>;
+export type ConfigsFromUserDefault = Exc<
+	Configs,
+	ConfigsFromCommandLine | Exc<ConfigsFromProgrammatic, ScriptsConfigs>
+>;
+
+export type ConfigSet<T extends Configs> = {
+	[k in T]: Config[k];
 };
-export function getConfig(params: GetConfigParams): Config {
-	const {
-		config_sources_priority = default_config_sources_priority,
-		merge_configs,
-	} = params;
-	if (
-		config_sources_priority.length !== config_sources.length ||
-		config_sources_priority.length !== new Set(config_sources_priority).size
-	) {
-		logger.error({ msg: config_sources_priority });
-		throw new Error();
-	}
-	return config_sources_priority.reduce(function (acc, k) {
-		return {
-			...acc,
-			...merge_configs[k],
-		};
-	}, {} as Config);
-}
+export type ArrayConfig = ConfigSet<ArrayConfigs>;
+export type StringConfig = ConfigSet<StringConfigs>;
+export type AuthorConfig = ConfigSet<AuthorConfigs>;
+export type GithubConfig = ConfigSet<GithubConfigs>;
+export type LicenseConfig = ConfigSet<LicenseConfigs>;
+export type ModuleConfig = ConfigSet<ModuleConfigs>;
+export type PathsConfig = ConfigSet<PathsConfigs>;
+export type RuntimeConfig = ConfigSet<RuntimeConfigs>;
+export type ScriptsConfig = ConfigSet<ScriptsConfigs>;
+export type CommandLineSourceConfig = ConfigSet<ConfigsFromCommandLine>;
+export type GitSourceConfig = ConfigSet<ConfigsFromGit>;
+export type ProgrammaticSourceConfig = ConfigSet<ConfigsFromProgrammatic>;
+export type PromptSourceConfig = ConfigSet<ConfigsFromPrompt>;
+export type SystemDefaultSourceConfig = ConfigSet<ConfigsFromSystemDefault>;
+export type UserDefaultSourceConfig = Partial<
+	ConfigSet<ConfigsFromUserDefault>
+>;

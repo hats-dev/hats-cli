@@ -12,9 +12,9 @@ describe('utils > functions > shell > git', function () {
 	});
 	test('getGitUserConfigs', function () {
 		return (async function () {
-			const git_configs = await getGitUserConfigs();
-			type T = typeof git_configs;
-			expect<T>(git_configs).toMatchObject(
+			const git_user_configs = await getGitUserConfigs();
+			type T = typeof git_user_configs;
+			expect<T>(git_user_configs).toMatchObject(
 				expect.objectContaining<T>({
 					user: {
 						name: expect.stringContaining('') as string,
@@ -23,7 +23,7 @@ describe('utils > functions > shell > git', function () {
 					},
 				}),
 			);
-			logger.log({ msg: git_configs, debug: false });
+			logger.log({ msg: git_user_configs, debug: false });
 		})();
 	});
 });

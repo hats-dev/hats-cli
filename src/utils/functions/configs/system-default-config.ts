@@ -1,8 +1,11 @@
-export enum LicenseType {
+import { GithubRepoAccessType } from '../shell/git';
+import { SystemDefaultSourceConfig } from './types';
+
+export enum LicenseNameType {
 	'BSD-3-Clause' = 'BSD-3-Clause',
 	'MIT' = 'MIT',
 }
-export const licenses: Record<LicenseType, string> = {
+export const licenses: Record<LicenseNameType, string> = {
 	'BSD-3-Clause': `All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -46,3 +49,16 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.`,
 } as const;
+const default_license_name: LicenseNameType = LicenseNameType['BSD-3-Clause'];
+export function getSystemDefaultSourceConfig(): SystemDefaultSourceConfig {
+	return {
+		'HATS.GITHUB.REPO_ACCESS': GithubRepoAccessType.private,
+		'HATS.LICENSE.NAME': default_license_name,
+		'HATS.MODULE.KEYWORDS': ['typescript'],
+		'HATS.PATHS.BUILD_DIR_PATH': 'dist/',
+		'HATS.PATHS.MAIN_MODULE_PATH': 'dist/index.js',
+		'HATS.PATHS.TS_BUILD_ROOT_DIR_PATH': './src',
+		'HATS.PATHS.TS_BUILD_EXLUDE_PATHS': ['tests', 'src/**/*.test.ts'],
+		'HATS.PATHS.TYPES_DTS_PATH': 'dist/index.d.ts',
+	};
+}

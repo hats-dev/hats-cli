@@ -1,9 +1,4 @@
-import {
-	hasRequiredPrograms,
-	LocalProgramType,
-	whichProgram,
-	whichPrograms,
-} from './which';
+import { LocalProgramType, whichProgram, whichPrograms } from './which';
 
 describe('utils > functions > shell > which', function () {
 	const fake_shell_program =
@@ -42,21 +37,6 @@ describe('utils > functions > shell > which', function () {
 			expect<U>(which_fake_programs).toContain<V>(LocalProgramType.npm);
 			expect<U>(which_fake_programs).toContain<V>(LocalProgramType.node);
 			expect<U>(which_fake_programs).not.toContain<V>(fake_shell_program);
-		})();
-	});
-
-	test('hasRequiredPrograms', function () {
-		return (async function () {
-			const installed_programs = await hasRequiredPrograms({
-				programs: valid_programs,
-			});
-			const missing_programs = await hasRequiredPrograms({
-				programs: fake_programs,
-			});
-			type T = typeof installed_programs;
-			type U = typeof missing_programs;
-			expect<T>(installed_programs).toBe<T>(true);
-			expect<U>(missing_programs).toBe<T>(false);
 		})();
 	});
 });

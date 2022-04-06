@@ -1,4 +1,4 @@
-import { O } from '../../ts/sets';
+import { Keys, O } from '../../ts/sets';
 import { LoggerFnOptions, logger } from '../console/logger';
 import exec from '../node/exec';
 
@@ -10,9 +10,10 @@ export enum LocalProgramType {
 	node = 'node',
 	npm = 'npm',
 }
+export type LocalProgramKey = Keys<typeof LocalProgramType>;
 export const local_program_types = O.keys(LocalProgramType);
 
-type WhichParams = { program: LocalProgramType } & LoggerFnOptions;
+type WhichParams = { program: LocalProgramKey } & LoggerFnOptions;
 export async function whichProgram(params: WhichParams): Promise<boolean> {
 	try {
 		const { stdout } = await exec(`which ${params.program}`);
@@ -28,29 +29,16 @@ export async function whichProgram(params: WhichParams): Promise<boolean> {
 }
 
 type WhichProgramsParams = {
-	readonly programs: LocalProgramType[];
+	readonly programs: LocalProgramKey[];
 } & LoggerFnOptions;
 export async function whichPrograms(
 	params: WhichProgramsParams,
-): Promise<LocalProgramType[]> {
+): Promise<LocalProgramKey[]> {
 	try {
 		const which_programs = await Promise.all(
 			params.programs.slice().map((program) => whichProgram({ program })),
 		);
 		return params.programs.slice().filter((_, i) => which_programs[i]);
-	} catch (msg) {
-		logger.error({ msg, ...params });
-		throw new Error();
-	}
-}
-
-type HasRequiredProgramsParams = WhichProgramsParams;
-export async function hasRequiredPrograms(
-	params: HasRequiredProgramsParams,
-): Promise<boolean> {
-	try {
-		const which_programs = await whichPrograms(params);
-		return params.programs.length === which_programs.length;
 	} catch (msg) {
 		logger.error({ msg, ...params });
 		throw new Error();

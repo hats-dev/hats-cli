@@ -17,22 +17,23 @@ export async function isGitTracked(
 	}
 }
 
-type GitUser = {
-	name?: string;
-	email?: string;
-	username?: string;
+type GitUserConfig = {
+	user?: {
+		name?: string;
+		email?: string;
+		username?: string;
+	};
 };
-type GitUserConfig = { user?: GitUser };
-export type GitConfigs = Record<string, Record<string, string>>;
-export type GetGitConfigsParams = typeof EmptyObject;
+type UnknownGitConfig = Record<string, Record<string, string>>;
+export type GetGitUserConfigsParams = typeof EmptyObject;
 export async function getGitUserConfigs(
-	params: GetGitConfigsParams & LoggerFnOptions = {},
+	params: GetGitUserConfigsParams & LoggerFnOptions = {},
 ): Promise<GitUserConfig> {
 	try {
 		const get_git_user_configs_sh = 'git config --list --global';
 		const { stdout } = await exec(get_git_user_configs_sh);
 		const configs = stdout.split('\n').filter((config) => config);
-		return configs.reduce(function (acc: GitConfigs, config) {
+		return configs.reduce(function (acc: UnknownGitConfig, config) {
 			const arr = config.split('=');
 			const key_segments = arr[0] || '';
 			const value = arr[1] || '';

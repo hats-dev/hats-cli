@@ -1,4 +1,3 @@
-import { ConfigType, RUNTIME } from '../hats/configs';
 import { getCwd, getRootDirPath } from './path';
 import { O } from '../../ts/sets';
 
@@ -14,9 +13,7 @@ describe('utils > functions > fs > path', function () {
 	beforeAll(function () {
 		test_cases.getCwd = getCwd();
 		test_cases.getRootDirPath = getRootDirPath({
-			[ConfigType.RUNTIME]: {
-				[RUNTIME.ROOT_DIR_NAME]: 'foo',
-			},
+			'HATS.RUNTIME.ROOT_DIR_NAME': 'foo',
 		});
 	});
 	test.each(O.keys(test_cases))('test case: %s', function (test_case) {
