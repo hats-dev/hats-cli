@@ -1,22 +1,28 @@
 import { ConfigType, RUNTIME } from '../hats/configs';
-import { logger } from '../console/logger';
 import { getCwd, getRootDirPath } from './path';
+import { O } from '../../ts/sets';
 
-test('utils > functions > fs > path', function () {
-	// Data
-	const cwd = getCwd();
-	const root_dir_path = getRootDirPath({
-		[ConfigType.RUNTIME]: {
-			[RUNTIME.ROOT_DIR_NAME]: 'foo',
-		},
+describe('utils > functions > fs > path', function () {
+	enum TestCaseType {
+		getCwd = 'getCwd',
+		getRootDirPath = 'getRootDirPath',
+	}
+	const test_cases: Record<TestCaseType, string | undefined> = {
+		getCwd: undefined,
+		getRootDirPath: undefined,
+	};
+	beforeAll(function () {
+		test_cases.getCwd = getCwd();
+		test_cases.getRootDirPath = getRootDirPath({
+			[ConfigType.RUNTIME]: {
+				[RUNTIME.ROOT_DIR_NAME]: 'foo',
+			},
+		});
 	});
-	[{ str: cwd }, { str: root_dir_path }].forEach((s) => {
-		// Types
-		const str_type = typeof s.str;
-		type T = typeof str_type;
-		// Tests
-		expect<T>(str_type).toBe<T>('string');
-		// Debug
-		logger.log({ msg: s, debug: false });
+	test.each(O.keys(test_cases))('test case: %s', function (test_case) {
+		const result = test_cases[test_case];
+		const result_type = typeof result;
+		type T = typeof result_type;
+		expect<T>(result_type).toBe<T>('string');
 	});
 });

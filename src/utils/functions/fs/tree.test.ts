@@ -18,8 +18,7 @@ const test_tree = `tests/tree-test-ts/
 └── file.test.txt`;
 test_tree;
 
-describe('utils > function > fs > tree > getFsTree', function () {
-	// Data
+describe('utils > function > fs > tree', function () {
 	const path = `${getCwd()}/tests/tree-test-ts`;
 	let fs_tree: Tree.FsEntry[] = [];
 
@@ -29,19 +28,17 @@ describe('utils > function > fs > tree > getFsTree', function () {
 		})();
 	});
 
-	test('locate all fs entries. assign correct type', function () {
-		// Types
+	test('getFsTree: entries', function () {
 		type T = typeof fs_tree;
-		// Tests
+		type U = Tree.FsDir[];
+		type V = Tree.FsFile[];
 		expect<T>(fs_tree).toHaveLength(7);
-		expect<Tree.FsDir[]>(fs_tree.filter(Tree.isDir)).toHaveLength(3);
-		expect<Tree.FsFile[]>(fs_tree.filter(Tree.isFile)).toHaveLength(4);
-		// Debug
+		expect<U>(fs_tree.filter(Tree.isDir)).toHaveLength(3);
+		expect<V>(fs_tree.filter(Tree.isFile)).toHaveLength(4);
 		logger.log({ msg: fs_tree, debug: false });
 	});
 
-	test('lock files', function () {
-		// Data
+	test('getFsTree: lock files', function () {
 		function isTestPackageLock(fsEntry: Tree.FsEntry): boolean {
 			return fsEntry.name.endsWith('test-package-lock.json');
 		}
@@ -51,15 +48,13 @@ describe('utils > function > fs > tree > getFsTree', function () {
 			throw new Error();
 		}
 		const { ignore_replacements } = lock;
-		// Types
 		type T = typeof matches;
-		type Ti = typeof ignore_replacements;
-		// Tests
+		type U = typeof ignore_replacements;
 		expect<T>(matches).toHaveLength(1);
-		expect<Ti>(ignore_replacements).toBe<Ti>(true);
+		expect<U>(ignore_replacements).toBe<U>(true);
 	});
 
-	test('module dir', function () {
+	test('getFsTree: module directories', function () {
 		function isTestModulesDir(fsEntry: Tree.FsEntry): boolean {
 			return fsEntry.name.endsWith('test_node_modules');
 		}
@@ -69,24 +64,19 @@ describe('utils > function > fs > tree > getFsTree', function () {
 			throw new Error();
 		}
 		const { skip_search } = modules;
-		// Types
 		type T = typeof test_modules_dir_matches;
-		type Ts = typeof skip_search;
-		// Tests
+		type U = typeof skip_search;
 		expect<T>(test_modules_dir_matches).toHaveLength(1);
-		expect<Ts>(skip_search).toBe<Ts>(true);
+		expect<U>(skip_search).toBe<U>(true);
 	});
 
-	test('module dir entries', function () {
-		// Data
+	test('getFsTree: module directory entries', function () {
 		function isTestModuleEntry(fsEntry: Tree.FsEntry): boolean {
 			const test_modules = ['bar', 'baz', 'foo'];
 			return !!test_modules.find((k) => fsEntry.name.includes(k));
 		}
 		const test_modules_entry_matches = fs_tree.filter(isTestModuleEntry);
-		// Types
 		type T = typeof test_modules_entry_matches;
-		// Tests
 		expect<T>(test_modules_entry_matches).toHaveLength(0);
 	});
 });
