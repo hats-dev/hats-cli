@@ -12,9 +12,9 @@ import {
 	getDefaultScripts,
 	fallback_script,
 	DefaultScriptConfigs,
-} from './defaults';
+} from './system-default-configs';
 
-describe('utils > functions > hats > defaults', function () {
+describe('utils > functions > hats > system-default-configs', function () {
 	const all_programs = local_program_types.map((t) => LocalProgramType[t]);
 	const only_default_scripts: DefaultScriptConfigs = scripts_configs.reduce(
 		function (acc, k) {
