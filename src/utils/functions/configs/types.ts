@@ -1,4 +1,6 @@
 import { Exc, Ext, Keys, O } from '../../ts/sets';
+import { GithubRepoAccessType } from '../shell/git';
+import { LocalProgramKey } from '../shell/which';
 import { LicenseNameType } from './system-default-config';
 
 export enum ConfigType {
@@ -85,12 +87,35 @@ export type ArrayConfigs = Ext<
 	| 'HATS.PATHS.TS_BUILD_EXLUDE_PATHS'
 	| 'HATS.RUNTIME.PROGRAMS'
 >;
+export type GithubRepoAccessConfig = Ext<Configs, 'HATS.GITHUB.REPO_ACCESS'>;
 export type LicenseNameConfig = Ext<Configs, 'HATS.LICENSE.NAME'>;
-export type StringConfigs = Exc<Configs, ArrayConfigs | LicenseNameConfig>;
+export type RuntimeProgramsConfig = Ext<Configs, 'HATS.RUNTIME.PROGRAMS'>;
+export type RuntimeSkipInteractiveConfig = Ext<
+	Configs,
+	'HATS.RUNTIME.SKIP_INTERACTIVE'
+>;
+export type StringConfigs = Exc<
+	Configs,
+	| ArrayConfigs
+	| GithubRepoAccessConfig
+	| LicenseNameConfig
+	| RuntimeProgramsConfig
+	| RuntimeSkipInteractiveConfig
+>;
+export enum FlagType {
+	y = 'y',
+	n = 'n',
+}
 export type Config = {
 	[key in ArrayConfigs]: string[];
 } & {
+	[key in GithubRepoAccessConfig]: GithubRepoAccessType;
+} & {
 	[key in LicenseNameConfig]: LicenseNameType;
+} & {
+	[key in RuntimeProgramsConfig]: LocalProgramKey[];
+} & {
+	[key in RuntimeSkipInteractiveConfig]: FlagType;
 } & {
 	[key in StringConfigs]: string;
 };
