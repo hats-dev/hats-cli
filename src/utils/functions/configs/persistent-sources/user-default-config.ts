@@ -1,35 +1,65 @@
-import { LoggerFnOptions } from '../../console/logger';
-import { LocalProgramParams } from '../../shell/which';
+import { constants as fs_constants, promises as fs_async } from 'fs';
+import { safeParse } from '../../../ts/objects';
+import { logger, LoggerFnOptions } from '../../console/logger';
+import getFileStr from '../../fs/reads';
+import writeStrToFile from '../../fs/writes';
+import exec from '../../node/exec';
 import { UserDefaultSourceConfig } from '../types';
 
-// TODO
-export type GetUserDefaultSourceConfigParams = LocalProgramParams &
-	LoggerFnOptions;
-export async function getUserDefaultSourceConfig(
-	params: GetUserDefaultSourceConfigParams,
-): Promise<UserDefaultSourceConfig> {
-	params;
-	return Promise.resolve({
-		// "HATS_AUTHOR_NAME": "",
-		// "HATS_GITHUB_ORG_USERNAME": "",
-		// "HATS_GITHUB_REPO": "",
-		// "HATS_GITHUB_REPO_ACCESS": GithubRepoAccessType.private,
-		// "HATS_GITHUB_USERNAME": "",
-		// "HATS_LICENSE_NAME": LicenseNameType["BSD-3-Clause"],
-		// "HATS_MODULE_DESCRIPTION": "",
-		// "HATS_MODULE_KEYWORDS": [],
-		// "HATS_PATHS_BUILD_DIR_PATH": "",
-		// "HATS_PATHS_MAIN_MODULE_PATH": "",
-		// "HATS_PATHS_TS_BUILD_ROOT_DIR_PATH": "",
-		// "HATS_PATHS_TS_BUILD_EXLUDE_PATHS": [],
-		// "HATS_PATHS_TYPES_DTS_PATH": "",
-		// "HATS_SCRIPTS_CHANGELOG": "",
-		// "HATS_SCRIPTS_DEPLOY": "",
-		// "HATS_SCRIPTS_MD_TOC": ""
-	});
+export type DebugConfigFile = { debug_file?: boolean };
+export type GetHomeConfigPathParams = DebugConfigFile & LoggerFnOptions;
+export async function getHomeConfigPath(
+	params: GetHomeConfigPathParams,
+): Promise<string> {
+	try {
+		const { stdout: home_dir } = await exec('echo ~');
+		return `${home_dir.replace('\n', '')}/.hats${
+			params.debug_file === true ? '-debug' : ''
+		}.json`;
+	} catch (msg) {
+		logger.error({ msg, ...params });
+		throw new Error();
+	}
 }
 
-// TODO
-export function saveUserDefaultSourceConfig(): void {
-	return;
+export async function getUserDefaultSourceConfig(
+	params: DebugConfigFile,
+): Promise<UserDefaultSourceConfig> {
+	try {
+		const config_path = await getHomeConfigPath(params);
+		await fs_async.access(config_path, fs_constants.F_OK);
+		const str = await getFileStr({ path: config_path });
+		return safeParse({ str });
+	} catch (msg) {
+		logger.error({ msg, ...params });
+		throw new Error();
+	}
+}
+
+export type SaveUserDefaultSourceConfigParams = GetHomeConfigPathParams & {
+	merge_config: UserDefaultSourceConfig;
+};
+export async function saveUserDefaultSourceConfig(
+	params: SaveUserDefaultSourceConfigParams,
+): Promise<UserDefaultSourceConfig> {
+	try {
+		const [path, prev_config] = (await Promise.all(
+			[getHomeConfigPath, getUserDefaultSourceConfig].map((fn) => fn(params)),
+		)) as [
+			Awaited<Promise<ReturnType<typeof getHomeConfigPath>>>,
+			Awaited<Promise<ReturnType<typeof getUserDefaultSourceConfig>>>,
+		];
+		const next = {
+			...prev_config,
+			...params.merge_config,
+		};
+		await writeStrToFile({
+			path,
+			str: JSON.stringify(next, null, '\t'),
+		});
+		return next;
+	} catch (msg) {
+		logger.error({ msg, ...params });
+		throw new Error();
+	}
 }
