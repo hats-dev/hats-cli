@@ -6,6 +6,7 @@
 	"bugs": "https://github.com/hats-dev/hats-cli/issues",
 	"dependencies": {
 		"@nodelib/fs.scandir": "^2.1.5",
+		"change-case": "^4.1.2",
 		"commander": "^9.1.0",
 		"inquirer": "^8.2.1"
 	},
