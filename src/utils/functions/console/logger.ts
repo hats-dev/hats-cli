@@ -55,14 +55,23 @@ function log({ type }: LogParams): LoggerFn {
 }
 
 type Logger = Record<LogType, LoggerFn>;
-export const logger: Logger = log_types.reduce(function (
-	acc: Logger,
-	log_type,
-) {
-	return {
-		...acc,
-		[log_type]: (params: LoggerFnParams) =>
-			log({ type: LogType[log_type] })(params),
-	};
-},
-{} as Logger);
+export const logger: Logger = log_types.reduce(
+	function (acc: Logger, log_type) {
+		return {
+			...acc,
+			[log_type]: (params: LoggerFnParams) =>
+				log({ type: LogType[log_type] })(params),
+		};
+	},
+	{
+		error() {
+			throw new Error();
+		},
+		log() {
+			throw new Error();
+		},
+		warn() {
+			throw new Error();
+		},
+	},
+);

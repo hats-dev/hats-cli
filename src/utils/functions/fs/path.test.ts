@@ -13,7 +13,7 @@ describe('utils > functions > fs > path', function () {
 	beforeAll(function () {
 		test_cases.getCwd = getCwd();
 		test_cases.getRootDirPath = getRootDirPath({
-			'HATS.RUNTIME.ROOT_DIR_NAME': 'foo',
+			HATS_RUNTIME_ROOT_DIR_NAME: 'foo',
 		});
 	});
 	test.each(O.keys(test_cases))('test case: %s', function (test_case) {
