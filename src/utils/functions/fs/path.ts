@@ -5,9 +5,9 @@ export function getCwd() {
 }
 export const getParentDirPath = getCwd;
 
-export type GetRootDirPathParams = Pick<Config, 'HATS.RUNTIME.ROOT_DIR_NAME'>;
+export type GetRootDirPathParams = Pick<Config, 'HATS_RUNTIME_ROOT_DIR_NAME'>;
 export function getRootDirPath(params: GetRootDirPathParams) {
-	return `${getParentDirPath()}/${params['HATS.RUNTIME.ROOT_DIR_NAME']}`;
+	return `${getParentDirPath()}/${params['HATS_RUNTIME_ROOT_DIR_NAME']}`;
 }
 
 export type PathFnParams = { path: string };

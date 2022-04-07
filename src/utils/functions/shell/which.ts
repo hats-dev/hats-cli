@@ -12,6 +12,9 @@ export enum LocalProgramType {
 }
 export type LocalProgramKey = Keys<typeof LocalProgramType>;
 export const local_program_types = O.keys(LocalProgramType);
+export type LocalProgramParams = {
+	local_programs: LocalProgramKey[];
+};
 
 type WhichParams = { program: LocalProgramKey } & LoggerFnOptions;
 export async function whichProgram(params: WhichParams): Promise<boolean> {
