@@ -30,12 +30,11 @@ describe('configs > session-sources > command-line-config.test.ts', function () 
 		type T = typeof choices;
 		expect<T>(choices).toEqual<T>(O.keys(expected_cli_choices));
 	});
-	test.each(O.keys(expected_cli_choices))(
-		'parseUserDefaultConfigsCliChoices %s',
-		function (key) {
+	describe('parseUserDefaultConfigsCliChoices', function () {
+		test.each(O.keys(expected_cli_choices))('cli config: %s', function (key) {
 			expect(parseUserDefaultConfigsCliChoices({ key })).toBe(
 				expected_cli_choices[key],
 			);
-		},
-	);
+		});
+	});
 });
