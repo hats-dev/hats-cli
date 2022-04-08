@@ -179,6 +179,29 @@ export type ConfigsFromPrompt = Exc<
 	| 'HATS_RUNTIME_PROGRAMS'
 	| 'HATS_RUNTIME_SKIP_INTERACTIVE'
 >;
+export function isConfigsFromPrompt(k: Configs): k is ConfigsFromPrompt {
+	const configs_from_prompt: Record<ConfigsFromPrompt, null> = {
+		HATS_AUTHOR_CONTACT: null,
+		HATS_AUTHOR_NAME: null,
+		HATS_GITHUB_ORG_USERNAME: null,
+		HATS_GITHUB_REPO: null,
+		HATS_GITHUB_REPO_ACCESS: null,
+		HATS_GITHUB_USERNAME: null,
+		HATS_LICENSE_NAME: null,
+		HATS_MODULE_DESCRIPTION: null,
+		HATS_MODULE_KEYWORDS: null,
+		HATS_PATHS_BUILD_DIR_PATH: null,
+		HATS_PATHS_MAIN_MODULE_PATH: null,
+		HATS_PATHS_TS_BUILD_ROOT_DIR_PATH: null,
+		HATS_PATHS_TS_BUILD_EXLUDE_PATHS: null,
+		HATS_PATHS_TYPES_DTS_PATH: null,
+		HATS_RUNTIME_ROOT_DIR_NAME: null,
+		HATS_SCRIPTS_CHANGELOG: null,
+		HATS_SCRIPTS_DEPLOY: null,
+		HATS_SCRIPTS_MD_TOC: null,
+	};
+	return k in configs_from_prompt;
+}
 export type ConfigsFromSystemDefault = Ext<
 	Configs,
 	| 'HATS_GITHUB_REPO_ACCESS'
@@ -211,9 +234,7 @@ export type GitDefaultSourceConfig = Pick<Config, ConfigsFromGitDefault>;
 export type ProgrammaticSourceConfig = Pick<Config, ConfigsFromProgrammatic>;
 export type PromptSourceConfig = Pick<Config, ConfigsFromPrompt>;
 export type SystemDefaultSourceConfig = Pick<Config, ConfigsFromSystemDefault>;
-export type UserDefaultSourceConfig = Partial<
-	Pick<Config, ConfigsFromUserDefault>
->;
+export type UserDefaultSourceConfig = Pick<Config, ConfigsFromUserDefault>;
 export type ConfigSourceMap<T extends ConfigSource> =
 	T extends ConfigSource.command_line
 		? CommandLineSourceConfig

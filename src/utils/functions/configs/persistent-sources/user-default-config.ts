@@ -24,7 +24,7 @@ export async function getHomeConfigPath(
 
 export async function getUserDefaultSourceConfig(
 	params: GetHomeConfigPathParams,
-): Promise<UserDefaultSourceConfig> {
+): Promise<Partial<UserDefaultSourceConfig>> {
 	try {
 		const config_path = await getHomeConfigPath(params);
 		await fs_async.access(config_path, fs_constants.F_OK);
@@ -37,11 +37,11 @@ export async function getUserDefaultSourceConfig(
 }
 
 export type SaveUserDefaultSourceConfigParams = GetHomeConfigPathParams & {
-	merge_config: UserDefaultSourceConfig;
+	merge_config: Partial<UserDefaultSourceConfig>;
 };
 export async function saveUserDefaultSourceConfig(
 	params: SaveUserDefaultSourceConfigParams,
-): Promise<UserDefaultSourceConfig> {
+): Promise<Partial<UserDefaultSourceConfig>> {
 	try {
 		const [path, prev_config] = (await Promise.all(
 			[getHomeConfigPath, getUserDefaultSourceConfig].map((fn) => fn(params)),

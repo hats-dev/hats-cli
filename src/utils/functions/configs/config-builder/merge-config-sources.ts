@@ -23,57 +23,43 @@ export async function mergeConfigSources(
 	params: MergeConfigSourcesParams,
 ): Promise<Config> {
 	try {
-		const { command_line_configs, local_programs } = params;
+		const { command_line_configs, HATS_RUNTIME_PROGRAMS } = params;
 		const merge_tasks = merge_sequence.map(function (_, i) {
 			if (!isMergeIndex(i)) {
 				throw new Error();
 			}
 			return async function (prev: Config) {
+				function merge<T extends Partial<Config>>(next: T) {
+					return {
+						...prev,
+						...next,
+					};
+				}
 				switch (i) {
 					case 1: {
-						const merge: CurrentConfig<typeof i> = command_line_configs;
-						return {
-							...prev,
-							...merge,
-						};
+						const next: CurrentConfig<typeof i> = command_line_configs;
+						return merge(next);
 					}
 					case 2: {
-						const merge: CurrentConfig<typeof i> =
+						const next: CurrentConfig<typeof i> =
 							await getGitDefaultSourceConfig(params);
-						return {
-							...prev,
-							...merge,
-						};
+						return merge(next);
 					}
 					case 3: {
-						const merge: CurrentConfig<typeof i> =
+						const next: CurrentConfig<typeof i> =
 							await getUserDefaultSourceConfig(params);
-						return {
-							...prev,
-							...merge,
-						};
+						return merge(next);
 					}
 					case 4: {
-						if (prev.HATS_RUNTIME_SKIP_INTERACTIVE) {
-							return prev;
-						} else {
-							const merge: CurrentConfig<typeof i> =
-								await getPromptSourceConfig(params);
-							return {
-								...prev,
-								...merge,
-							};
-						}
+						const next: CurrentConfig<typeof i> =
+							prev.HATS_RUNTIME_SKIP_INTERACTIVE
+								? {}
+								: await getPromptSourceConfig(prev);
+						return merge(next);
 					}
 					case 5: {
-						const merge: CurrentConfig<typeof i> = getProgrammaticConfig({
-							prev_config: prev,
-							local_programs,
-						});
-						return {
-							...prev,
-							...merge,
-						};
+						const next: CurrentConfig<typeof i> = getProgrammaticConfig(prev);
+						return merge(next);
 					}
 					default:
 						throw new Error();
@@ -91,10 +77,10 @@ export async function mergeConfigSources(
 			HATS_MODULE_DESCRIPTION: '',
 			HATS_MODULE_DISPLAY_NAME: '',
 			HATS_MODULE_NAME: '',
-			HATS_RUNTIME_PROGRAMS: local_programs,
+			HATS_RUNTIME_PROGRAMS,
 			HATS_RUNTIME_ROOT_DIR_NAME: '',
 			HATS_RUNTIME_SKIP_INTERACTIVE: FlagType.n,
-			...getSystemDefaultSourceConfig({ local_programs }),
+			...getSystemDefaultSourceConfig(params),
 		};
 		return exact<Rt>()(
 			await merge_tasks.reduce(

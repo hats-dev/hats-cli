@@ -29,8 +29,8 @@ function getMergeSequence(): MergeSequence {
 	return merge_sequence;
 }
 const merge_sequence = getMergeSequence();
-export type CurrentConfig<I extends MergeIndex> = ConfigSourceMap<
-	typeof merge_sequence[I]
+export type CurrentConfig<I extends MergeIndex> = Partial<
+	ConfigSourceMap<typeof merge_sequence[I]>
 >;
 export type CurrentSequence<I extends MergeIndex> = typeof merge_sequence[I];
 export default merge_sequence;

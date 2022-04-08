@@ -36,7 +36,7 @@ function hasRequiredPrograms(params: GetDefaultScriptParams): boolean {
 	const { required } = default_scripts[params.script_config];
 	return (
 		required.findIndex(
-			(program) => !params.local_programs.includes(program),
+			(program) => !params.HATS_RUNTIME_PROGRAMS.includes(program),
 		) === -1
 	);
 }

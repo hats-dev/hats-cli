@@ -1,8 +1,8 @@
 import { O } from '../../../ts/sets';
-import { getModuleDisplayName } from './programmatic-config';
+import { getDisplayName } from './format-display-names';
 
-describe('utils > functions > configs > config-builder > programmatic-config', function () {
-	describe('getModuleDisplayName', function () {
+describe('utils > functions > configs > config-builder > format-display-names', function () {
+	describe('getDisplayName', function () {
 		const examples = {
 			foo: 'Foo',
 			'happy-typescript': 'Happy TypeScript',
@@ -13,9 +13,7 @@ describe('utils > functions > configs > config-builder > programmatic-config', f
 			'javascript-library': 'JavaScript Library',
 		} as const;
 		test.each(O.keys(examples))('test %s', function (example) {
-			expect(
-				getModuleDisplayName({ prev_config: { HATS_MODULE_NAME: example } }),
-			).toBe(examples[example]);
+			expect(getDisplayName({ str: example })).toBe(examples[example]);
 		});
 	});
 });

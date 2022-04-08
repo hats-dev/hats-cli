@@ -1,3 +1,4 @@
+import { Config } from '../../functions/configs/types';
 import { Keys, O } from '../../ts/sets';
 import { LoggerFnOptions, logger } from '../console/logger';
 import exec from '../node/exec';
@@ -12,9 +13,10 @@ export enum LocalProgramType {
 }
 export type LocalProgramKey = Keys<typeof LocalProgramType>;
 export const local_program_types = O.keys(LocalProgramType);
-export type LocalProgramParams = {
-	local_programs: LocalProgramKey[];
-};
+export type LocalProgramParams = Pick<Config, 'HATS_RUNTIME_PROGRAMS'>;
+// {
+// 	local_programs: LocalProgramKey[];
+// };
 
 type WhichParams = { program: LocalProgramKey } & LoggerFnOptions;
 export async function whichProgram(params: WhichParams): Promise<boolean> {
