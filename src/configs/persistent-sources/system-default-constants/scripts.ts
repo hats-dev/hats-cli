@@ -30,13 +30,13 @@ const default_scripts: DefaultScriptMap = {
 };
 
 type GetDefaultScriptParams = {
-	script_config: ScriptsConfigs;
+	required: LocalProgramKey[];
 } & GetDefaultScriptsParams;
-function hasRequiredPrograms(params: GetDefaultScriptParams): boolean {
-	const { required } = default_scripts[params.script_config];
+export function hasRequiredPrograms(params: GetDefaultScriptParams): boolean {
+	const { required, HATS_RUNTIME_PROGRAMS } = params;
 	return (
 		required.findIndex(
-			(program) => !params.HATS_RUNTIME_PROGRAMS.includes(program),
+			(program) => !HATS_RUNTIME_PROGRAMS.includes(program),
 		) === -1
 	);
 }
@@ -50,7 +50,12 @@ export function getDefaultScripts(
 		scripts_configs.reduce(
 			function (acc, script_config) {
 				const next = { ...acc };
-				if (hasRequiredPrograms({ script_config, ...params })) {
+				if (
+					hasRequiredPrograms({
+						required: default_scripts[script_config].required,
+						...params,
+					})
+				) {
 					const { default_script } = default_scripts[script_config];
 					next[script_config] = default_script;
 				}

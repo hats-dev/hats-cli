@@ -87,6 +87,14 @@ export type ArrayConfigs = Ext<
 	| 'HATS_PATHS_TS_BUILD_EXLUDE_PATHS'
 	| 'HATS_RUNTIME_PROGRAMS'
 >;
+export function isArrayConfigs(k: Configs): k is ArrayConfigs {
+	const array_configs: Record<ArrayConfigs, null> = {
+		HATS_MODULE_KEYWORDS: null,
+		HATS_PATHS_TS_BUILD_EXLUDE_PATHS: null,
+		HATS_RUNTIME_PROGRAMS: null,
+	};
+	return k in array_configs;
+}
 export type GithubRepoAccessConfig = Ext<Configs, 'HATS_GITHUB_REPO_ACCESS'>;
 export type LicenseNameConfig = Ext<Configs, 'HATS_LICENSE_NAME'>;
 export type RuntimeProgramsConfig = Ext<Configs, 'HATS_RUNTIME_PROGRAMS'>;
@@ -102,15 +110,11 @@ export type StringConfigs = Exc<
 	| RuntimeProgramsConfig
 	| RuntimeSkipInteractiveConfig
 >;
-export enum FlagType {
-	y = 'y',
-	n = 'n',
-}
 export type Config = Record<ArrayConfigs, string[]> &
 	Record<GithubRepoAccessConfig, GithubRepoAccessType> &
 	Record<LicenseNameConfig, LicenseNameType> &
 	Record<RuntimeProgramsConfig, LocalProgramKey[]> &
-	Record<RuntimeSkipInteractiveConfig, FlagType> &
+	Record<RuntimeSkipInteractiveConfig, boolean> &
 	Record<StringConfigs, string>;
 
 export const author_configs = O.keys(AUTHOR).map(
@@ -218,6 +222,30 @@ export type ConfigsFromUserDefault = Exc<
 	| 'HATS_MODULE_NAME'
 	| RuntimeConfigs
 >;
+export function isConfigsFromUserDefault(
+	k: Configs,
+): k is ConfigsFromUserDefault {
+	const configs_from_user_default: Record<ConfigsFromUserDefault, null> = {
+		HATS_AUTHOR_CONTACT: null,
+		HATS_AUTHOR_NAME: null,
+		HATS_GITHUB_ORG_USERNAME: null,
+		HATS_GITHUB_REPO: null,
+		HATS_GITHUB_REPO_ACCESS: null,
+		HATS_GITHUB_USERNAME: null,
+		HATS_LICENSE_NAME: null,
+		HATS_MODULE_DESCRIPTION: null,
+		HATS_MODULE_KEYWORDS: null,
+		HATS_PATHS_BUILD_DIR_PATH: null,
+		HATS_PATHS_MAIN_MODULE_PATH: null,
+		HATS_PATHS_TS_BUILD_ROOT_DIR_PATH: null,
+		HATS_PATHS_TS_BUILD_EXLUDE_PATHS: null,
+		HATS_PATHS_TYPES_DTS_PATH: null,
+		HATS_SCRIPTS_CHANGELOG: null,
+		HATS_SCRIPTS_DEPLOY: null,
+		HATS_SCRIPTS_MD_TOC: null,
+	};
+	return k in configs_from_user_default;
+}
 
 export type ArrayConfig = Pick<Config, ArrayConfigs>;
 export type StringConfig = Pick<Config, StringConfigs>;

@@ -3,12 +3,7 @@ import { exact } from '../../ts/objects';
 import merge_sequence, { CurrentConfig, isMergeIndex } from './sequence';
 import { logger, LoggerFnOptions } from '../../console/logger';
 import { getSystemDefaultSourceConfig } from '../persistent-sources/system-default-config';
-import {
-	Config,
-	ConfigSource,
-	CommandLineSourceConfig,
-	FlagType,
-} from '../types';
+import { Config, ConfigSource, CommandLineSourceConfig } from '../types';
 import { getGitDefaultSourceConfig } from '../persistent-sources/git-default-config';
 import { getUserDefaultSourceConfig } from '../persistent-sources/user-default-config';
 import { getPromptSourceConfig } from '../session-sources/prompt-config';
@@ -36,6 +31,9 @@ export async function mergeConfigSources(
 					};
 				}
 				switch (i) {
+					case 0: {
+						return prev;
+					}
 					case 1: {
 						const next: CurrentConfig<typeof i> = command_line_configs;
 						return merge(next);
@@ -79,7 +77,7 @@ export async function mergeConfigSources(
 			HATS_MODULE_NAME: '',
 			HATS_RUNTIME_PROGRAMS,
 			HATS_RUNTIME_ROOT_DIR_NAME: '',
-			HATS_RUNTIME_SKIP_INTERACTIVE: FlagType.n,
+			HATS_RUNTIME_SKIP_INTERACTIVE: false,
 			...getSystemDefaultSourceConfig(params),
 		};
 		return exact<Rt>()(

@@ -23,7 +23,7 @@ export async function getHomeConfigPath(
 }
 
 export async function getUserDefaultSourceConfig(
-	params: GetHomeConfigPathParams,
+	params: GetHomeConfigPathParams = {},
 ): Promise<Partial<UserDefaultSourceConfig>> {
 	try {
 		const config_path = await getHomeConfigPath(params);
