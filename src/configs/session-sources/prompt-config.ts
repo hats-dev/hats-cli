@@ -1,6 +1,6 @@
 import inquirer from 'inquirer';
-import { EmptyObject } from '../../../ts/objects';
-import { O } from '../../../ts/sets';
+import { EmptyObject } from '../../ts/objects';
+import { O } from '../../ts/sets';
 import { LoggerFnOptions } from '../../console/logger';
 import { GithubRepoAccessType } from '../../shell/git';
 import { getDisplayName } from '../config-builder/format-display-names';

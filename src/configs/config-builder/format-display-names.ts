@@ -1,5 +1,5 @@
 import { capitalCase } from 'change-case';
-import { O } from '../../../ts/sets';
+import { O } from '../../ts/sets';
 
 type GetDisplayNameParams = { str: string };
 export function getDisplayName(params: GetDisplayNameParams) {

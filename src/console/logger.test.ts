@@ -1,4 +1,4 @@
-import { O, Keys } from '../../ts/sets';
+import { O, Keys } from '../ts/sets';
 import { logger, LogType } from './logger';
 
 describe('utils > functions > console > logger', function () {

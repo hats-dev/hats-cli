@@ -4,7 +4,7 @@ import {
 	LocalProgramKey,
 	LocalProgramParams,
 } from '../../../shell/which';
-import { exact } from '../../../../ts/objects';
+import { exact } from '../../../ts/objects';
 
 const fallback_script = 'exit 0';
 type DefaultScriptMap = Record<

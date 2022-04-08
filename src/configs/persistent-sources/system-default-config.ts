@@ -1,4 +1,4 @@
-import { exact } from '../../../ts/objects';
+import { exact } from '../../ts/objects';
 import { GithubRepoAccessType } from '../../shell/git';
 import { LocalProgramParams } from '../../shell/which';
 import { SystemDefaultSourceConfig } from '../types';

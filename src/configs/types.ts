@@ -1,4 +1,4 @@
-import { Exc, Ext, Keys, O } from '../../ts/sets';
+import { Exc, Ext, Keys, O } from '../ts/sets';
 import { GithubRepoAccessType } from '../shell/git';
 import { LocalProgramKey } from '../shell/which';
 import { LicenseNameType } from './persistent-sources/system-default-constants/licenses';

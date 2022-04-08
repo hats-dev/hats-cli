@@ -1,4 +1,4 @@
-import { O } from '../../ts/sets';
+import { O } from '../ts/sets';
 import { isProdEnv } from '../node/env';
 
 export enum LogType {

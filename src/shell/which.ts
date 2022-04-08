@@ -1,5 +1,5 @@
-import { Config } from '../../functions/configs/types';
-import { Keys, O } from '../../ts/sets';
+import { Config } from '../configs/types';
+import { Keys, O } from '../ts/sets';
 import { LoggerFnOptions, logger } from '../console/logger';
 import exec from '../node/exec';
 

@@ -1,5 +1,5 @@
 import { getCwd, getRootDirPath } from './path';
-import { O } from '../../ts/sets';
+import { O } from '../ts/sets';
 
 describe('utils > functions > fs > path', function () {
 	enum TestCaseType {

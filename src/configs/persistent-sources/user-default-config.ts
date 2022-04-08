@@ -1,5 +1,5 @@
 import { constants as fs_constants, promises as fs_async } from 'fs';
-import { safeParse } from '../../../ts/objects';
+import { safeParse } from '../../ts/objects';
 import { logger, LoggerFnOptions } from '../../console/logger';
 import getFileStr from '../../fs/reads';
 import writeStrToFile from '../../fs/writes';

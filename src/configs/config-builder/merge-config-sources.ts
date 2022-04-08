@@ -1,5 +1,5 @@
 import { LocalProgramParams } from '../../shell/which';
-import { exact } from '../../../ts/objects';
+import { exact } from '../../ts/objects';
 import merge_sequence, { CurrentConfig, isMergeIndex } from './sequence';
 import { logger, LoggerFnOptions } from '../../console/logger';
 import { getSystemDefaultSourceConfig } from '../persistent-sources/system-default-config';

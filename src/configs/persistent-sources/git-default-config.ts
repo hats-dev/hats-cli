@@ -1,4 +1,4 @@
-import { EmptyObject } from '../../../ts/objects';
+import { EmptyObject } from '../../ts/objects';
 import { LoggerFnOptions, logger } from '../../console/logger';
 import exec from '../../node/exec';
 import { GitDefaultSourceConfig } from '../types';

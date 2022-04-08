@@ -1,4 +1,4 @@
-import { O } from '../../../ts/sets';
+import { O } from '../../ts/sets';
 import { getDisplayName } from './format-display-names';
 
 describe('utils > functions > configs > config-builder > format-display-names', function () {
