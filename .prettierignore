@@ -1,2 +1,5 @@
 # Build files
 dist/
+
+# Json template files
+tests/git-test-ts/package.test.json

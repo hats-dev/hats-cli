@@ -14,6 +14,7 @@ import {
 } from './configs/session-sources/command-line-config';
 import { isArrayConfigs } from './configs/types';
 import { logger } from './console/logger';
+import { scaffoldRepo, replaceRepoPlaceholders, initRepo } from './shell/git';
 import { O } from './ts/sets';
 
 type CreateCommandOptions = {
@@ -47,10 +48,13 @@ void (async function () {
 						},
 						HATS_RUNTIME_PROGRAMS,
 					});
-					logger.log({
-						msg: config,
-						stringify: true,
-					});
+					await [scaffoldRepo, replaceRepoPlaceholders, initRepo]
+						.map(function (task) {
+							return async function () {
+								await task(config);
+							};
+						})
+						.reduce((acc, fn) => acc.then(fn), Promise.resolve());
 					return;
 				})();
 			});
@@ -70,8 +74,7 @@ void (async function () {
 				options: ConfigCommandOptions,
 			) {
 				return (async function (): Promise<void> {
-					const { list } = options;
-					if (list) {
+					if (options.list) {
 						const prev_config = await getUserDefaultSourceConfig();
 						const prev_config_keys = O.keys(prev_config);
 						const msg = prev_config_keys
@@ -83,7 +86,11 @@ void (async function () {
 								return `${cli_config}=${cli_config_value}`;
 							})
 							.join('\n');
-						logger.log({ msg, stringify: false });
+						logger.log({
+							msg,
+							prod: true,
+							stringify: false,
+						});
 						return;
 					}
 					const user_default_config = parseUserDefaultConfigsCliChoices({

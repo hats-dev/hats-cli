@@ -3,6 +3,7 @@ import {
 	LocalProgramType,
 	LocalProgramKey,
 	LocalProgramParams,
+	hasRequiredPrograms,
 } from '../../../shell/which';
 import { exact } from '../../../ts/objects';
 
@@ -28,18 +29,6 @@ const default_scripts: DefaultScriptMap = {
 		required: [LocalProgramType.doctoc],
 	},
 };
-
-type GetDefaultScriptParams = {
-	required: LocalProgramKey[];
-} & GetDefaultScriptsParams;
-export function hasRequiredPrograms(params: GetDefaultScriptParams): boolean {
-	const { required, HATS_RUNTIME_PROGRAMS } = params;
-	return (
-		required.findIndex(
-			(program) => !HATS_RUNTIME_PROGRAMS.includes(program),
-		) === -1
-	);
-}
 
 type Rt = ReturnType<typeof getDefaultScripts>;
 export type GetDefaultScriptsParams = LocalProgramParams;
