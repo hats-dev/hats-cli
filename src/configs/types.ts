@@ -169,6 +169,8 @@ export type ConfigsFromGitDefault = Ext<
 export type ConfigsFromProgrammatic = Ext<
 	Configs,
 	| 'HATS_AUTHOR_CONTACT'
+	| 'HATS_GITHUB_ORG_USERNAME'
+	| 'HATS_GITHUB_REPO'
 	| 'HATS_LICENSE_BODY'
 	| 'HATS_LICENSE_YEAR'
 	| 'HATS_MODULE_DISPLAY_NAME'
@@ -216,6 +218,7 @@ export type ConfigsFromSystemDefault = Ext<
 >;
 export type ConfigsFromUserDefault = Exc<
 	Configs,
+	| 'HATS_GITHUB_REPO'
 	| 'HATS_LICENSE_BODY'
 	| 'HATS_LICENSE_YEAR'
 	| 'HATS_MODULE_DISPLAY_NAME'
@@ -229,7 +232,6 @@ export function isConfigsFromUserDefault(
 		HATS_AUTHOR_CONTACT: null,
 		HATS_AUTHOR_NAME: null,
 		HATS_GITHUB_ORG_USERNAME: null,
-		HATS_GITHUB_REPO: null,
 		HATS_GITHUB_REPO_ACCESS: null,
 		HATS_GITHUB_USERNAME: null,
 		HATS_LICENSE_NAME: null,

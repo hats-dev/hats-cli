@@ -1,7 +1,5 @@
+import { textSync } from 'figlet';
 import { logger } from '../../console/logger';
-import { getCwd } from '../../fs/path';
-import getFileStr from '../../fs/reads';
-import { isGitTracked } from '../../shell/git';
 import {
 	LocalProgramKey,
 	whichPrograms,
@@ -9,7 +7,6 @@ import {
 	LocalProgramType,
 	hasRequiredPrograms,
 } from '../../shell/which';
-import { safeParse } from '../../ts/objects';
 import {
 	configs,
 	ConfigsFromUserDefault,
@@ -49,32 +46,8 @@ type CommanderCliParams = {
 };
 export async function getCommanderCliParams(): Promise<CommanderCliParams> {
 	try {
-		type TaskRes = [
-			Awaited<Promise<ReturnType<typeof isGitTracked>>>,
-			Awaited<Promise<ReturnType<typeof whichPrograms>>>,
-			Awaited<Promise<ReturnType<typeof getFileStr>>>,
-		];
-		const tasks = [
-			function () {
-				return isGitTracked({
-					path: getCwd(),
-				});
-			},
-			function () {
-				return whichPrograms({
-					programs: local_program_types,
-				});
-			},
-			function () {
-				return getFileStr({
-					path: `${getCwd()}/package.json`,
-				});
-			},
-		];
-		const [is_git_tracked, HATS_RUNTIME_PROGRAMS, package_json_str] =
-			(await Promise.all(tasks.map((fn) => fn()))) as TaskRes;
-		const { version } = safeParse<{ version: string }>({
-			str: package_json_str,
+		const HATS_RUNTIME_PROGRAMS = await whichPrograms({
+			programs: local_program_types,
 		});
 		const required = [
 			LocalProgramType.gh,
@@ -86,13 +59,6 @@ export async function getCommanderCliParams(): Promise<CommanderCliParams> {
 			HATS_RUNTIME_PROGRAMS,
 			required,
 		});
-		if (is_git_tracked) {
-			logger.error({
-				msg: 'Error: Current directory is already a git repository',
-				prod: true,
-			});
-			throw new Error();
-		}
 		if (!has_required_programs) {
 			logger.error({
 				msg: `Error: Missing one ore more required program: \
@@ -104,15 +70,44 @@ ${required.join(
 			});
 			throw new Error();
 		}
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-var-requires
+		const { version } = require('../../../package.json');
 		if (!version) {
 			throw new Error();
 		}
 		return {
 			HATS_RUNTIME_PROGRAMS,
-			version,
+			version: version as string,
 		};
 	} catch (err) {
 		console.log(err);
+		throw new Error();
+	}
+}
+
+export async function printWelcome(): Promise<void> {
+	try {
+		const str = await Promise.resolve(
+			textSync('HaTs', {
+				font: '3D-ASCII',
+				horizontalLayout: 'default',
+				verticalLayout: 'default',
+				width: 60,
+				whitespaceBreak: true,
+			}),
+		);
+		logger.log({
+			msg: `${str}
+
+Welcome to the HaTs CLI! 🧢
+
+Let's configure your TypeScript project:
+
+`,
+			stringify: false,
+		});
+	} catch (msg) {
+		logger.error({ msg });
 		throw new Error();
 	}
 }

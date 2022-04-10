@@ -7,6 +7,7 @@ import { getFsTree, isFile } from '../fs/tree';
 import getFileStr from '../fs/reads';
 import writeStrToFile from '../fs/writes';
 import { O } from '../ts/sets';
+import { getStaticSystemDefaultSourceConfig } from '../configs/persistent-sources/system-default-config';
 
 export type IsGitTrackedParams = PathFnParams & LoggerFnOptions;
 export async function isGitTracked(
@@ -27,7 +28,7 @@ type ScaffoldRepoParams = Pick<Config, 'HATS_RUNTIME_ROOT_DIR_NAME'> &
 export async function scaffoldRepo(params: ScaffoldRepoParams): Promise<void> {
 	try {
 		const library_repo_url =
-			'https://github.com/hats-dev/hats-scaffold-library.git';
+			'https://github.com/hats-dev/hats-template-library.git';
 		const sh_scaffold_repo = `\
 git clone ${library_repo_url} ${params.HATS_RUNTIME_ROOT_DIR_NAME} \
 && rm -rf ${getRootDirPath(params)}/.git\
@@ -63,14 +64,27 @@ export async function replaceRepoPlaceholders(
 		const replacements = fs_tree
 			.filter(isFile)
 			.filter((f) => !f.ignore_replacements);
-		await Promise.all(
-			replacements.map(async function (replacement) {
+
+		await Promise.all([
+			...replacements.map(async function (replacement) {
 				const { path } = replacement;
 				const prev = await getFileStr({ path });
 				const str = mapTemplateFileStr({ params, prev });
 				await writeStrToFile({ path, str });
 			}),
-		);
+			...[params.HATS_PATHS_TS_BUILD_ROOT_DIR_PATH].map(async function (p) {
+				const static_system_default_source_config =
+					getStaticSystemDefaultSourceConfig();
+				if (
+					p !==
+					static_system_default_source_config.HATS_PATHS_TS_BUILD_ROOT_DIR_PATH
+				) {
+					const root_dir_path = getRootDirPath(params);
+					const mv_script = `mv ${root_dir_path}/${static_system_default_source_config.HATS_PATHS_TS_BUILD_ROOT_DIR_PATH} ${root_dir_path}/${p}`;
+					await exec(mv_script);
+				}
+			}),
+		]);
 	} catch (msg) {
 		logger.error({ msg, ...params });
 		throw new Error();

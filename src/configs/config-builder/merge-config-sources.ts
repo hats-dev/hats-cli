@@ -8,6 +8,7 @@ import { getGitDefaultSourceConfig } from '../persistent-sources/git-default-con
 import { getUserDefaultSourceConfig } from '../persistent-sources/user-default-config';
 import { getPromptSourceConfig } from '../session-sources/prompt-config';
 import { getProgrammaticConfig } from './programmatic-config';
+import { licenses } from '../persistent-sources/system-default-constants/licenses';
 
 type Rt = Awaited<Promise<ReturnType<typeof mergeConfigSources>>>;
 type MergeConfigSourcesParams = {
@@ -49,14 +50,18 @@ export async function mergeConfigSources(
 						return merge(next);
 					}
 					case 4: {
+						const next: CurrentConfig<typeof i> = getProgrammaticConfig(prev);
+						return merge(next);
+					}
+					case 5: {
 						const next: CurrentConfig<typeof i> =
 							prev.HATS_RUNTIME_SKIP_INTERACTIVE
 								? {}
 								: await getPromptSourceConfig(prev);
-						return merge(next);
-					}
-					case 5: {
-						const next: CurrentConfig<typeof i> = getProgrammaticConfig(prev);
+						if (next.HATS_LICENSE_NAME) {
+							(next as Config).HATS_LICENSE_BODY =
+								licenses[next.HATS_LICENSE_NAME];
+						}
 						return merge(next);
 					}
 					default:

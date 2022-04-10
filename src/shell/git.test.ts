@@ -111,7 +111,7 @@ describe('utils > functions > shell > git', function () {
 		"postcommit": "npm run push",
 		"preversion": "npm run validate",
 		"version": "auto-changelog -p && npm run stage",
-		"postversion": "npm run push && npm run build && npm publish"
+		"postversion": "npm run push && npm run build && npm publish --access=restricted"
 	},
 	"type": "commonjs",
 	"types": "dist/index.d.ts",

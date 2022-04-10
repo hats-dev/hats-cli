@@ -7,7 +7,6 @@ import {
 } from '../../../shell/which';
 import { exact } from '../../../ts/objects';
 
-const fallback_script = 'exit 0';
 type DefaultScriptMap = Record<
 	ScriptsConfigs,
 	{
@@ -21,7 +20,7 @@ const default_scripts: DefaultScriptMap = {
 		required: [LocalProgramType['auto-changelog']],
 	},
 	HATS_SCRIPTS_DEPLOY: {
-		default_script: 'npm publish',
+		default_script: 'npm publish --access=restricted',
 		required: [LocalProgramType.npm],
 	},
 	HATS_SCRIPTS_MD_TOC: {
@@ -51,9 +50,11 @@ export function getDefaultScripts(
 				return next;
 			},
 			{
-				HATS_SCRIPTS_CHANGELOG: fallback_script,
-				HATS_SCRIPTS_DEPLOY: fallback_script,
-				HATS_SCRIPTS_MD_TOC: fallback_script,
+				HATS_SCRIPTS_CHANGELOG:
+					'echo \\"Missing changelog automation (Consider: https://npmjs.com/package/auto-changelog)\\"',
+				HATS_SCRIPTS_DEPLOY: 'echo \\"Missing deployment script"',
+				HATS_SCRIPTS_MD_TOC:
+					'echo \\"Missing *.md ToC automation (Consider: https://npmjs.com/package/doctoc)\\"',
 			},
 		),
 	);

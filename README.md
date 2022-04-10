@@ -2,7 +2,9 @@
 
 # HaTs
 
-Happy TypeScript (aka `HaTs`) is a project scaffolding CLI that speeds up
+![alt text](https://github.com/hats-dev/hats-logos/blob/master/hats-logo.png?raw=true)
+
+HaTs (short for _Happy TypeScript_) is a project scaffolding CLI that speeds up
 the process of creating TS libraries.
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
@@ -22,11 +24,11 @@ the process of creating TS libraries.
 
 ## System requirements
 
-Ensure your shell environment has the following programs installed globally:
+Ensure your shell environment has the following programs installed globally (\* required)
 
-- [Node (v12 or higher)](https://www.npmjs.com/package/n)
-- [Git (v2.3 or higher)](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
-- [GitHub CLI (latest)](https://cli.github.com/)
+- [Node* (v12 or higher)](https://www.npmjs.com/package/n)
+- [Git* (v2.3 or higher)](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
+- [GitHub CLI* (latest)](https://cli.github.com/)
 - [auto-changelog](https://npmjs.com/package/auto-changelog)
 - [doctoc](https://npmjs.com/package/doctoc)
 

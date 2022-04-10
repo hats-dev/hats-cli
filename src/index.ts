@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 // eslint-disable-next-line node/shebang
+import { exit, stdout } from 'process';
+import inquirer from 'inquirer';
 import { Argument, Command } from 'commander';
 import { mergeConfigSources } from './configs/config-builder/merge-config-sources';
 import {
@@ -11,10 +13,17 @@ import {
 	getUserDefaultConfigsCliChoices,
 	mapUserDefaultConfigsCliChoices,
 	parseUserDefaultConfigsCliChoices,
+	printWelcome,
 } from './configs/session-sources/command-line-config';
 import { isArrayConfigs } from './configs/types';
 import { logger } from './console/logger';
-import { scaffoldRepo, replaceRepoPlaceholders, initRepo } from './shell/git';
+import { getCwd } from './fs/path';
+import {
+	scaffoldRepo,
+	replaceRepoPlaceholders,
+	initRepo,
+	isGitTracked,
+} from './shell/git';
 import { O } from './ts/sets';
 
 type CreateCommandOptions = {
@@ -40,6 +49,17 @@ void (async function () {
 				options: CreateCommandOptions,
 			) {
 				return (async function (): Promise<void> {
+					const is_git_tracked = await isGitTracked({
+						path: getCwd(),
+					});
+					if (is_git_tracked) {
+						logger.error({
+							msg: 'Error: Current directory is already a git repository',
+							prod: true,
+						});
+						throw new Error();
+					}
+					await printWelcome();
 					const { yes } = options;
 					const config = await mergeConfigSources({
 						command_line_configs: {
@@ -48,6 +68,21 @@ void (async function () {
 						},
 						HATS_RUNTIME_PROGRAMS,
 					});
+					const loader = [
+						'/ Initializing',
+						'| Initializing',
+						'\\ Initializing',
+						'- Initializing',
+					];
+					let i = 4;
+					const ui = new inquirer.ui.BottomBar({
+						bottomBar: loader[i % 4],
+					});
+					const { log: ui_log } = ui;
+					const stdout_pipe = stdout.pipe(ui_log);
+					const loader_interval = setInterval(() => {
+						ui.updateBottomBar(loader[i++ % 4] || '');
+					}, 300);
 					await [scaffoldRepo, replaceRepoPlaceholders, initRepo]
 						.map(function (task) {
 							return async function () {
@@ -55,7 +90,12 @@ void (async function () {
 							};
 						})
 						.reduce((acc, fn) => acc.then(fn), Promise.resolve());
-					return;
+					ui.updateBottomBar('Installation done!\n');
+					clearInterval(loader_interval);
+					stdout_pipe.end();
+					ui_log.end();
+					// eslint-disable-next-line no-process-exit
+					exit(0);
 				})();
 			});
 		program

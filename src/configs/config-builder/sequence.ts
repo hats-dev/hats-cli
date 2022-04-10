@@ -6,8 +6,8 @@ export type MergeSequence = [
 	ConfigSource.command_line,
 	ConfigSource.git_default,
 	ConfigSource.user_default,
-	ConfigSource.prompt,
 	ConfigSource.programmatic,
+	ConfigSource.prompt,
 ];
 type MergeIndex = 0 | 1 | 2 | 3 | 4 | 5;
 function getMergeSequence(): MergeSequence {
@@ -16,8 +16,8 @@ function getMergeSequence(): MergeSequence {
 		ConfigSource.command_line,
 		ConfigSource.git_default,
 		ConfigSource.user_default,
-		ConfigSource.prompt,
 		ConfigSource.programmatic,
+		ConfigSource.prompt,
 	];
 	if (
 		merge_sequence.length !== config_sources.length ||

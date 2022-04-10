@@ -3,6 +3,7 @@ import { ConfigsFromUserDefault } from '../types';
 import {
 	getUserDefaultConfigsCliChoices,
 	parseUserDefaultConfigsCliChoices,
+	printWelcome,
 } from './command-line-config';
 
 describe('configs > session-sources > command-line-config.test.ts', function () {
@@ -10,7 +11,6 @@ describe('configs > session-sources > command-line-config.test.ts', function () 
 		'author.contact': 'HATS_AUTHOR_CONTACT',
 		'author.name': 'HATS_AUTHOR_NAME',
 		'github.org-username': 'HATS_GITHUB_ORG_USERNAME',
-		'github.repo': 'HATS_GITHUB_REPO',
 		'github.repo-access': 'HATS_GITHUB_REPO_ACCESS',
 		'github.username': 'HATS_GITHUB_USERNAME',
 		'license.name': 'HATS_LICENSE_NAME',
@@ -36,5 +36,11 @@ describe('configs > session-sources > command-line-config.test.ts', function () 
 				expected_cli_choices[key],
 			);
 		});
+	});
+	test('printWelcome', function () {
+		return (async function () {
+			await printWelcome();
+			expect(null).toBeNull();
+		})();
 	});
 });
