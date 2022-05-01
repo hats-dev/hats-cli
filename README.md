@@ -26,9 +26,9 @@ the process of creating TS libraries.
 
 Ensure your shell environment has the following programs installed globally (\* required)
 
-- [Node* (v12 or higher)](https://www.npmjs.com/package/n)
-- [Git* (v2.3 or higher)](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
-- [GitHub CLI* (latest)](https://cli.github.com/)
+- [Node\* (v12 or higher)](https://www.npmjs.com/package/n)
+- [Git\* (v2.3 or higher)](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
+- [GitHub CLI\* (latest)](https://cli.github.com/)
 - [auto-changelog](https://npmjs.com/package/auto-changelog)
 - [doctoc](https://npmjs.com/package/doctoc)
 
