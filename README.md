@@ -2,7 +2,7 @@
 
 # HaTs
 
-![alt text](https://github.com/hats-dev/hats-logos/blob/master/hats-logo.png?raw=true)
+![HaTs Logo](https://github.com/hats-dev/hats-logos/blob/master/hats-logo.png?raw=true)
 
 HaTs (short for _Happy TypeScript_) is a project scaffolding CLI that speeds up
 the process of creating TS libraries.
@@ -83,3 +83,8 @@ Please see the [Contributing Guidelines](/CONTRIBUTING.md).
 ## License
 
 BSD-3-Clause
+
+## Todo
+
+- [] Windows and Linux support
+- [] Add options for GitHub actions, Travis CI and Husky 
